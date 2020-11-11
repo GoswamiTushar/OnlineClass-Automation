@@ -1,13 +1,12 @@
 import os
 from selenium import webdriver
+from bs4 import BeautifulSoup
 import pandas as pd # for extracting timings and storing them in a csv file 
 import credentials
 import solve_captcha
 import time
 
 def handle_login():
-
-	current_directory = os.getcwd()
 
 	if os.path.exists(current_directory + r"/captcha.png"):
 		os.remove(current_directory + r"/captcha.png")
@@ -35,12 +34,25 @@ def handle_class():
 	online_class_button.click()
 
 def get_timings():
-	pass
+	html = driver.page_source
+	soup = BeautifulSoup(html, 'html.parser').prettify()
+	if os.path.exists(current_directory + "/schedule_page.html"):
+		os.remove(current_directory + "/schedule_page.html")
+
+	fp = open(current_directory + "/schedule_page.html", 'w')
+	fp.write(soup)
+	fp.close()
 
 
 if __name__ == '__main__':
 	# driver = webdriver.Chrome(r"/home/froggy/Programs/Python/OnlineClass-Automation/ChromeDriver/chromedriver"))
 	driver = webdriver.Firefox()
-	handle_login()
-	handle_class()
-	get_timings()
+	current_directory = os.getcwd()
+	try:
+		handle_login()
+		handle_class()
+		get_timings()
+	except:
+		handle_login()
+		handle_class()
+		get_timings()
