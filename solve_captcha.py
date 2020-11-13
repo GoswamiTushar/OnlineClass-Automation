@@ -19,9 +19,10 @@ def get_text(filename):
 	first_threshold.save("final.png")
 	im = Image.open('final.png')
 	captcha_text = pytesseract.image_to_string(im)
-	print("Solved Captcha : ", captcha_text)
+	captcha_text.replace(" ", "")
+	print("Solved Captcha : ", captcha_text.upper())
 	# print(captcha_text)
-	return str(captcha_text)
+	return captcha_text.upper()
 
 
 if __name__ == '__main__':
