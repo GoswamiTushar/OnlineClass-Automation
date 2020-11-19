@@ -79,6 +79,9 @@ def get_timings():
 
 	fp.close()
 
+def connect_to_zoom():
+	pass
+
 if __name__ == '__main__':
 
 	# driver = webdriver.Chrome(r"/home/froggy/Programs/Python/OnlineClass-Automation/ChromeDriver/chromedriver")
@@ -92,6 +95,7 @@ if __name__ == '__main__':
 		handle_class()
 		time.sleep(5)
 		get_timings()
+		connect_to_zoom()
 	except:
 		open_webpage()
 		time.sleep(5)
@@ -102,3 +106,4 @@ if __name__ == '__main__':
 		handle_class()
 		time.sleep(5)
 		get_timings()
+		connect_to_zoom()
