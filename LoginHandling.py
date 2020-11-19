@@ -1,10 +1,13 @@
 import os
 from selenium import webdriver
 from bs4 import BeautifulSoup
-import pandas as pd # for extracting timings and storing them in a csv file 
+import re
 import credentials
 import solve_captcha
 import time
+
+driver = webdriver.Firefox()
+current_directory = os.getcwd()
 
 def open_webpage():
 
@@ -56,25 +59,29 @@ def handle_class():
 
 def get_timings():
 
-	calender = driver.find_element_by_xpath('//*[@id="LecDate"]')
-	calender.click()
-	# 10thDate = driver.find_element_by_xpath('/html/body/div[4]/div[1]/table/tbody/tr[3]/td[3]')
-	# 10thDate.click()
-
 	html = driver.page_source
-	soup = BeautifulSoup(html, 'html.parser').prettify()
-	if os.path.exists(current_directory + "/schedule_page.html"):
-		os.remove(current_directory + "/schedule_page.html")
+	soup = BeautifulSoup(html, 'html.parser')
+	timings = soup.find_all('b')
+	date = re.findall("([0-3][0-9]).([0-1][0-9]).([0-9]{4})", str(timings[0]))
+	
+	if os.path.exists(current_directory + "/timings.txt"):
+		os.remove(current_directory + "/timings.txt")
 
-	fp = open(current_directory + "/schedule_page.html", 'w')
-	fp.write(soup)
+	fp = open(current_directory + "/timings.txt", 'w')
+	fp.write("Schedule for {}/{}/{}\n".format(date[0][0], date[0][1], date[0][2]))
+	i = 1
+
+	for time in timings:
+		t = re.findall("([0-1][0-9]:[0-5][0-9]) ([AP][M])", str(time))
+		x, y, w, z = t[0][0], t[0][1], t[1][0], t[1][1]
+		fp.write("{}) From {} {} to {} {}\n".format(i, x, y, w, z))
+		i += 1
+
 	fp.close()
 
 if __name__ == '__main__':
 
-	# driver = webdriver.Chrome(r"/home/froggy/Programs/Python/OnlineClass-Automation/ChromeDriver/chromedriver"))
-	driver = webdriver.Firefox()
-	current_directory = os.getcwd()
+	# driver = webdriver.Chrome(r"/home/froggy/Programs/Python/OnlineClass-Automation/ChromeDriver/chromedriver")
 	try:
 		open_webpage()
 		time.sleep(5)
