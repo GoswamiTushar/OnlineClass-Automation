@@ -18,11 +18,13 @@ def get_text(filename):
 	first_threshold = black_and_white.point(lambda p: p > th1 and 255)
 	first_threshold.save("final.png")
 	im = Image.open('final.png')
-	captcha_text = pytesseract.image_to_string(im)
-	captcha_text.replace(" ", "")
-	print("Solved Captcha : ", captcha_text.upper())
+	captcha_text = pytesseract.image_to_string(im).upper()
+	captcha_text.replace(" ", "").upper()
+	captcha_text.replace("  ", "").upper()
+	captcha_text.replace("    ", "").upper()
+	print("Solved Captcha : ", captcha_text)
 	# print(captcha_text)
-	return captcha_text.upper()
+	return captcha_text
 
 
 if __name__ == '__main__':
